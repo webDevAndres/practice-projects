@@ -11,7 +11,7 @@ var calculateMpg = function (miles, gallons) {
     return mpg;
 };
 
-var createMpgNode = function (mpg) {
+var createMpgNodes = function (mpg) {
     //create a new node
     var inputNode = document.createElement('input');
     var labelNode = document.createElement('label');
@@ -48,7 +48,7 @@ var displayResult = function () {
                 resultElement.value = newValue;
             }
         } else {
-            createMpgNode(newValue);
+            createMpgNodes(newValue);
         }
     }
 };
