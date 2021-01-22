@@ -11,7 +11,7 @@ var calculateMpg = function (miles, gallons) {
     return mpg;
 };
 
-var createNodes = function () {
+var createNodes = function (mpg) {
     //create a new node
     var inputNode = document.createElement('input');
     var labelNode = document.createElement('label');
@@ -19,48 +19,72 @@ var createNodes = function () {
     inputNode.type = "text";
     inputNode.id = "mpg_result";
     inputNode.setAttribute("disabled", true);
+    //get the calculated mpg from the parameter and set the value of the inputNode
+    inputNode.value = mpg;
     //set the the text and attribute of the label element
     labelNode.textContent = "Miles Per Gallon";
     labelNode.setAttribute("for", "mpg_result");
-    labelNode.id = "mpg_result_Label"
-    //attach the nodes to the end of the form
-    var parentDiv = document.getElementById("main_content");
-    labelNode.style.display = "none";
-    labelNode.appendChild(inputNode);
-    parentDiv.appendChild(labelNode);
-};
 
-var displayResult = function () {
-    var userMiles = parseFloat(document.getElementById("miles").value);
-    var userGallons = parseFloat(document.getElementById("gallons").value);
-
-    if (isNaN(userMiles) || isNaN(userGallons)) {
-        alert("Both entries must be numeric.");
-    } else {
-        var mpg = calculateMpg(userMiles, userGallons);
-        updateMpg(mpg);
+    if (!isNaN(inputNode.value)) {
+        //attach the nodes to the end of the form
+        var parentDiv = document.getElementById("main_content");
+        labelNode.appendChild(inputNode);
+        parentDiv.appendChild(labelNode);
     }
 };
 
-var updateMpg = function (mpg) {
-    //display result element and update its value
-    var result_element = $("mpg_result")
-    result_element.value = mpg;
-    result_element.parentNode.style.display = "inline-block";
-}
 
-var hideNodes = function () {
-    //set result display to none
-    $("mpg_result").parentNode.style.display = "none";
-}
+var displayResult = function () {
+    var userMiles = parseFloat($("miles").value);
+    var userGallons = parseFloat($("gallons").value);
+    var result = validateData(userMiles, userGallons);
+    var resultElement = $("mpg_result");
+
+    if (resultElement) {
+        var currentValue = resultElement.value;
+        var newValue = result;
+
+        if (currentValue !== newValue) {
+            resultElement.value = newValue;
+        }
+    } else {
+        createNodes(result);
+
+    }
+};
+
+var validateData = function (userMiles, userGallons) {
+    var isValid = true;
+
+    if (isNaN(userMiles)) {
+        $("miles_error").firstChild.nodeValue = "Miles must be numeric.";
+        isValid = false;
+    } else if (userMiles < 0) {
+        $("miles_error").firstChild.nodeValue = "Miles must be greater than zero";
+        isValid = false;
+    } else {
+        $("miles_error").firstChild.nodeValue = "";
+    }
+
+    if (isNaN(userGallons)) {
+        $("gallons_error").firstChild.nodeValue = "Gallons must be numeric.";
+        isValid = false;
+    } else if (userGallons < 0) {
+        $("gallons_error").firstChild.nodeValue = "Gallons must be greater than 0";
+        isValid = false;
+    } else {
+        $("gallons_error").firstChild.nodeValue = "";
+    }
+
+    if (isValid) {
+        var mpg = calculateMpg(userMiles, userGallons);
+        return mpg;
+    }
+
+};
 
 window.onload = function () {
     $("calculate_mpg").onclick = displayResult;
-    //create and hide results nodes
-    createNodes();
-    //set listeners to hide results nodes when user clicks into field to change mileage or gallons
-    $("miles").onfocus = hideNodes;
-    $("gallons").onfocus = hideNodes;
     //set focus to miles field initially
     $("miles").focus();
 };
