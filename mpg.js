@@ -11,7 +11,9 @@ var calculateMpg = function (miles, gallons) {
     return mpg;
 };
 
-var createNodes = function (mpg) {
+
+var createMpgNodes = function (mpg) {
+
     //create a new node
     var inputNode = document.createElement('input');
     var labelNode = document.createElement('label');
@@ -35,56 +37,67 @@ var createNodes = function (mpg) {
 
 
 var displayResult = function () {
-    var userMiles = parseFloat($("miles").value);
-    var userGallons = parseFloat($("gallons").value);
-    var result = validateData(userMiles, userGallons);
-    var resultElement = $("mpg_result");
+    var isValid = validateData();
+    if (isValid) {
+        var userMiles = parseFloat($("miles").value);
+        var userGallons = parseFloat($("gallons").value);
+        var resultElement = $("mpg_result");
+        var newValue = calculateMpg(userMiles, userGallons);
 
-    if (resultElement) {
-        var currentValue = resultElement.value;
-        var newValue = result;
-
-        if (currentValue !== newValue) {
-            resultElement.value = newValue;
+        if (resultElement) {
+            var currentValue = resultElement.value;
+            if (currentValue !== newValue) {
+                resultElement.value = newValue;
+            }
+        } else {
+            createMpgNodes(newValue);
         }
-    } else {
-        createNodes(result);
-
     }
 };
 
-var validateData = function (userMiles, userGallons) {
-    var isValid = true;
+var validateData = function () {
+    //confirm both elements and return boolean value - ideally both should be true
+    var validMiles = validateElement($("miles"));
+    var validGallons = validateElement($("gallons"));
+    return (validMiles && validGallons);
+};
 
-    if (isNaN(userMiles)) {
-        $("miles_error").firstChild.nodeValue = "Miles must be numeric.";
-        isValid = false;
-    } else if (userMiles < 0) {
-        $("miles_error").firstChild.nodeValue = "Miles must be greater than zero";
-        isValid = false;
+var validateElement = function (inputElement) {
+    //error name is the element ID + the word _error
+    var errorElementName = inputElement.id + "_error";
+    //the element id is the first word of the error text - uppercase the 1st letter, too
+    var firstChar = inputElement.id.charAt(0).toUpperCase();
+    var errorTextName = firstChar + inputElement.id.slice(1);
+    //reject NaN and text-based entries.
+    if (isNaN(inputElement.value) || inputElement.value.trim() == "") {
+        $(errorElementName).firstChild.nodeValue = errorTextName + " must be numeric.";
+        return false;
+    //reject negative values.
+    } else if (inputElement.value <= 0) {
+        $(errorElementName).firstChild.nodeValue = errorTextName + " must be greater than zero";
+        return false;
     } else {
-        $("miles_error").firstChild.nodeValue = "";
+        $(errorElementName).firstChild.nodeValue = "";
+        return true;
     }
+};
 
-    if (isNaN(userGallons)) {
-        $("gallons_error").firstChild.nodeValue = "Gallons must be numeric.";
-        isValid = false;
-    } else if (userGallons < 0) {
-        $("gallons_error").firstChild.nodeValue = "Gallons must be greater than 0";
-        isValid = false;
-    } else {
-        $("gallons_error").firstChild.nodeValue = "";
-    }
+var assignDefaultEnterAction = function () {
+    addListener($("miles"));
+    addListener($("gallons"));
+};
 
-    if (isValid) {
-        var mpg = calculateMpg(userMiles, userGallons);
-        return mpg;
-    }
-
+var addListener = function (element) {
+    element.addEventListener("keyup", function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            $("calculate_mpg").click();
+        }
+    });
 };
 
 window.onload = function () {
+    assignDefaultEnterAction();
     $("calculate_mpg").onclick = displayResult;
-    //set focus to miles field initially
     $("miles").focus();
 };
