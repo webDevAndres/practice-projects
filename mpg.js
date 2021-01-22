@@ -11,7 +11,9 @@ var calculateMpg = function (miles, gallons) {
     return mpg;
 };
 
+
 var createMpgNodes = function (mpg) {
+
     //create a new node
     var inputNode = document.createElement('input');
     var labelNode = document.createElement('label');
@@ -31,8 +33,8 @@ var createMpgNodes = function (mpg) {
         labelNode.appendChild(inputNode);
         parentDiv.appendChild(labelNode);
     }
-
 };
+
 
 var displayResult = function () {
     var isValid = validateData();
@@ -58,7 +60,7 @@ var validateData = function () {
     var validMiles = validateElement($("miles"));
     var validGallons = validateElement($("gallons"));
     return (validMiles && validGallons);
-}
+};
 
 var validateElement = function (inputElement) {
     //error name is the element ID + the word _error
