@@ -31,7 +31,6 @@ var createNodes = function (mpg) {
         labelNode.appendChild(inputNode);
         parentDiv.appendChild(labelNode);
     }
-
 };
 
 
@@ -84,10 +83,8 @@ var validateData = function (userMiles, userGallons) {
 
 };
 
-
-
-
 window.onload = function () {
     $("calculate_mpg").onclick = displayResult;
+    //set focus to miles field initially
     $("miles").focus();
 };
