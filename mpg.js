@@ -82,6 +82,14 @@ var validateElement = function (inputElement) {
     }
 };
 
+var clearEntries = function() {
+    $("miles").value = "";
+    $("gallons").value = "";
+    $("miles_error").firstChild.nodeValue = "*";
+    $("gallons_error").firstChild.nodeValue = "*";
+    $("mpg_result").parentNode.remove();
+};
+
 var assignDefaultEnterAction = function () {
     addListener($("miles"));
     addListener($("gallons"));
@@ -98,6 +106,7 @@ var addListener = function (element) {
 
 window.onload = function () {
     assignDefaultEnterAction();
+    $("clear_entries").onclick = clearEntries;
     $("calculate_mpg").onclick = displayResult;
     $("miles").focus();
 };
